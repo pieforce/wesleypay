@@ -1,0 +1,9 @@
+<section class="wesleypay">
+
+    <app-bill-header (add)="onAddBillItem($event)"></app-bill-header>
+
+    <app-bill-item-list [billItems]="billItems" (togglePaid)="onToggleBillItemPaid($event)" (remove)="onRemoveBillItem($event)"></app-bill-item-list>
+
+    <app-bill-footer [billItems]="billItems"></app-bill-footer>
+    
+</section>

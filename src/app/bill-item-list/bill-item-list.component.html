@@ -1,0 +1,10 @@
+<section class="main" *ngIf="billItems.length > 0">
+  <ul class="bill-item-list">
+      <li *ngFor="let billItem of billItems" [class.paid]="billItem.paid">
+        <app-bill-item-list-row
+        [billItem]="billItem"
+        (togglePaid)="onToggleBillItemPaid($event)"
+        (remove)="onRemoveBillItem($event)"></app-bill-item-list-row>
+      </li>
+  </ul>
+</section>
