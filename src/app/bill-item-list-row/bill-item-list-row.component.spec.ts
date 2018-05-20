@@ -19,7 +19,7 @@ describe('BillItemListRowComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(BillItemListRowComponent);
     component = fixture.componentInstance;
-    component.billItem = new BillItem({ id: 1, title: 'Test', cost: 34.50, complete: false });
+    component.billItem = new BillItem({ id: 1, title: 'Test', cost: 34.50, paid: false });
     fixture.detectChanges();
   });
 

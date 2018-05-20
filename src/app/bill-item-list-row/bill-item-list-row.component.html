@@ -1,5 +1,5 @@
 <div class="view">
-  <input class="toggle" type="checkbox" (click)="toggleBillItemComplete(billItem)" [checked]="billItem.paid">
+  <input class="toggle" type="checkbox" (click)="toggleBillItemPaid(billItem)" [checked]="billItem.paid">
   <label>{{billItem.title}}</label>
   <label>{{billItem.cost}}</label>
   <button class="destroy" (click)="removeBillItem(billItem)"></button>
