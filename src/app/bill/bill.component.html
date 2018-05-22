@@ -1,0 +1,10 @@
+<h1>{{ billDescrip }}</h1>
+
+<ul>
+  <li class="text" style="display:unset" *ngFor="let billItem of billItems | async">
+    <div class="title">{{ billItem.title }}</div>
+    <div class="cost">{{ billItem.cost | currency:"USD"}}</div>
+    <div class="paid">{{ billItem.paid }}</div>    
+    <br>
+  </li>
+</ul>
