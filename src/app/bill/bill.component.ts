@@ -28,55 +28,43 @@ interface BillItem {
 export class BillComponent implements OnInit {
   user: Observable<firebase.User>;
 
+  // Firestore Collections
   billColl: AngularFirestoreCollection<Bill>;
   billItemColl: AngularFirestoreCollection<BillItem>;
-  billItemDoc: AngularFirestoreDocument<BillItem>;
-  bills: Observable<Bill[]>;
-  // bills: Observable<Bill[]>;
-  billItems: Observable<BillItem[]>;
-  // billItems: any;
-  // billItems: any;
-  // billItems: Observable<any[]>;
-  // billItems: BillItem[] = [];
 
+  // Firestore Documents
+  billItemDoc: AngularFirestoreDocument<BillItem>;
+
+  // Observables
+  bills: Observable<Bill[]>;
+  billItems: Observable<BillItem[]>;
+
+  // Variables
   billId: string;
   billDescrip: string = '';
-
   // billId: string = 'J8NgHKUaWaIU0wRyQ0We';
 
-  // inject the activatated route
+  // Inject the activatated route
   constructor(private route: ActivatedRoute, public afAuth: AngularFireAuth, private db: AngularFirestore) {
     this.afAuth.auth.signInAnonymously();
     this.user = this.afAuth.authState;
-
-    // this.billColl = this.db.collection('bills', ref => ref.where('description', '==', 'Test Bill Curry House'));
-    // this.bills = this.billColl.valueChanges();
-
-    // this.billColl = this.db.collection<Bill>('bills');
-    // this.bills = this.billColl.valueChanges();
-    
-
-    // this.billItemColl = this.db.collection<BillItem>('bills/' + 'FJ8NgHKUaWaIU0wRyQ0We' + '/items');
-    // this.billItems = this.billItemColl.valueChanges();
   }
 
   ngOnInit() {
-    // subscribe to the parameters observable
+    // Subscribe to the parameters observable
     this.route.paramMap.subscribe(params => {
+      // Get Bill ID from route param
       console.log('Bill ID: ' + params.get('billId'));
       this.billId = params.get('billId');
 
-      // this.billItems = this.billItemColl.valueChanges();
-      // this.bills = this.db.collection('bills').valueChanges();
-      // this.bills = this.db.doc('bills/' + params.get('billId')).valueChanges();
-      // this.bills = this.db.doc('bills/' + params.get('billId')).valueChanges();
-      // this.billItems = this.db.doc('bills/' + params.get('billId')).valueChanges();
-
-      // this.billColl = this.db.collection('bills', ref => ref.where('description', '==', 'Test Bill Curry House'));
+      // Store all bills in DB, save in bills
       this.billColl = this.db.collection<Bill>('bills');
       this.bills = this.billColl.valueChanges();
 
+      // Get bill document by Bill ID
       this.billItemDoc = this.db.collection('bills').doc(this.billId);
+
+      // Get bill description
       this.billItemDoc.ref.get().then(doc => {
         if (doc.exists) {
           this.billDescrip = doc.get('description');
@@ -87,45 +75,9 @@ export class BillComponent implements OnInit {
       }).catch(function(error) {
           console.log("Error getting document:", error);
       });
+
+      // Get bill items from collection
       this.billItems = this.billItemDoc.collection<BillItem>('items').valueChanges();
-
-
-      // this.billColl.doc(params.get('billId')).ref.get().then(function(doc) {
-      //   if (doc.exists) {
-      //       console.log("Document data:", doc.data());
-      //       console.log("Document items:", doc.get('items'));
-      //       console.log("Document json:", doc.get('items')[0].title);
-      //       this.billItems = doc.get('items') as BillItem;
-      //       console.log("billItems:", this.billItems);
-      //   } else {
-      //       console.log("No such document! " + params.get('billId'));
-      //   }
-      // }).catch(function(error) {
-      //     console.log("Error getting document:", error);
-      // });
-
-
-
-      // this.billColl.doc(params.get('billId')).ref.get().then(function(doc) {
-      //   if (doc.exists) {
-      //       console.log("Document data:", doc.data());
-      //       console.log("Document items:", doc.get('items'));
-      //       console.log("Document costs:", doc.get('items/cost'));
-      //       this.billItems = doc.get('items');
-      //   } else {
-      //       console.log("No such document! " + params.get('billId'));
-      //   }
-      // }).catch(function(error) {
-      //     console.log("Error getting document:", error);
-      // });
     });
-    
-    
   }
-
-  // public getBillItems() {
-  //   console.log(this.billItems);
-  //   // this.billItems = this.db.doc('bills/' + this.billId);
-  //   this.db
-  // }
 }
