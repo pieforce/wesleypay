@@ -42,7 +42,7 @@ export class BillComponent implements OnInit {
   // Variables
   billId: string;
   billDescrip: string = '';
-  // billId: string = 'J8NgHKUaWaIU0wRyQ0We';
+  // billId: string = 'J8NgHKUaWaIU0wRyQ0We'; // test document ID
 
   // Inject the activatated route
   constructor(private route: ActivatedRoute, public afAuth: AngularFireAuth, private db: AngularFirestore) {
