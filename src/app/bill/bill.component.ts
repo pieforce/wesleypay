@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { AngularFirestoreCollection } from 'angularfire2/firestore';
@@ -7,6 +7,16 @@ import { AngularFireDatabase } from 'angularfire2/database';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { Observable } from 'rxjs/Observable';
 import * as firebase from 'firebase/app';
+
+import {
+  trigger,
+  animate,
+  transition,
+  style,
+  query
+} from '@angular/animations';
+
+import { ViewChild, ElementRef } from '@angular/core'
 
 interface Bill {
   description: string;
@@ -25,6 +35,7 @@ interface BillItem {
   templateUrl: './bill.component.html',
   styleUrls: ['./bill.component.css']
 })
+
 export class BillComponent implements OnInit {
   user: Observable<firebase.User>;
 
@@ -42,6 +53,7 @@ export class BillComponent implements OnInit {
   // Variables
   billId: string;
   billDescrip: string = '';
+  billMessage: string = '';
   // billId: string = 'J8NgHKUaWaIU0wRyQ0We'; // test document ID
 
   // Inject the activatated route
@@ -68,7 +80,9 @@ export class BillComponent implements OnInit {
       this.billItemDoc.ref.get().then(doc => {
         if (doc.exists) {
           this.billDescrip = doc.get('description');
+          this.billMessage = doc.get('message');
           console.log('Bill Description: ' + this.billDescrip);
+          console.log('Bill Message: ' + this.billMessage);
         } else {
           console.log("Document DNE!");
         }
