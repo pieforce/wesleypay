@@ -1,28 +1,47 @@
-<h1>{{ billDescrip }}</h1>
+<h2>{{ billDescrip }}</h2>
 <p>{{ billMessage }}</p>
 
-<!-- <ul>
-  <li class="text" style="display:unset" *ngFor="let billItem of billItems | async">
-    <div class="title" [@fadeAnimation]="true">{{ billItem.title }}</div>
-    <div class="cost">{{ billItem.cost | currency:"USD"}}</div>
-    <div class="paid">{{ billItem.paid }}</div>    
-    <br>
-  </li>
-</ul> -->
-
-<div>
-  <table style="width:20%">
+<div style="overflow-x:auto;">
+  <table style="width:25%">
       <thead>
-        <th>Item</th>
-        <th>Cost</th>
-        <th>Paid?</th>
+        <th></th>
+        <th></th>
+        <th>Select</th>
       </thead>
       <ng-container class="text" style="display:unset" >
         <tr *ngFor="let billItem of billItems | async">
           <td class="title">{{ billItem.title }}</td>
           <td class="cost">{{ billItem.cost | currency:"USD"}}</td>
-          <td class="paid">{{ billItem.paid }}</td>
+          <td class="selection"><input class="billItemCheckbox" type="checkbox" [disabled]="billItem.mandatory" [checked]="billItem.mandatory" (change)="calcTotal()" value="{{billItem.cost}}"></td>
         </tr>
       </ng-container>
+      <tr>
+        <td class="total">Total:</td>
+        <td><a href="https://www.paypal.me/WesleyNg/{{total | number:'1.0-2'}}">{{ total | currency:"USD" }}</a></td>
+        <td>
+      </tr>
     </table>
 </div>
+
+<br>
+<br>
+<div class="minor-text" *ngIf="!showDetailedBreakdown" (click)="showDetailedBreakdown=true">[Click for bill details]</div>
+<table style="width:10%;" *ngIf="showDetailedBreakdown">
+    <thead class="minor-text" style="text-align: center">Bill Details</thead>
+    <tr>
+      <td class="minor-text">Subtotal</td>
+      <td class="minor-text">{{ subTotal | currency:"USD" }}</td>
+    </tr>
+    <tr>
+      <td class="minor-text">Tax ({{ taxRate | percent:'1.0-2' }})</td>
+      <td class="minor-text">{{ tax | currency:"USD" }}</td>
+    </tr>
+    <tr>
+      <td class="minor-text">Tip ({{ tipRate | percent:'1.0-2' }})</td>
+      <td class="minor-text">{{ tip | currency:"USD" }}</td>
+    </tr>
+    <tr>
+      <td class="minor-text">Total</td>
+      <td class="minor-text">{{ total | currency:"USD" }}</td>
+    </tr>
+</table>

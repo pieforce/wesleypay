@@ -16,8 +16,6 @@ import {
   query
 } from '@angular/animations';
 
-import { ViewChild, ElementRef } from '@angular/core'
-
 interface Bill {
   description: string;
   items: BillItem[];
@@ -54,7 +52,13 @@ export class BillComponent implements OnInit {
   billId: string;
   billDescrip: string = '';
   billMessage: string = '';
-  // billId: string = 'J8NgHKUaWaIU0wRyQ0We'; // test document ID
+  total: number;
+  subTotal: number;
+  tax: number;
+  tip: number;
+  taxRate: number;
+  tipRate: number;
+  showDetailedBreakdown: boolean = false;
 
   // Inject the activatated route
   constructor(private route: ActivatedRoute, public afAuth: AngularFireAuth, private db: AngularFirestore) {
@@ -76,22 +80,44 @@ export class BillComponent implements OnInit {
       // Get bill document by Bill ID
       this.billItemDoc = this.db.collection('bills').doc(this.billId);
 
-      // Get bill description
+      // Get bill items from collection
+      this.billItems = this.billItemDoc.collection<BillItem>('items').valueChanges();
+
+      // Get bill description, message, tax percent, and tip percent
       this.billItemDoc.ref.get().then(doc => {
         if (doc.exists) {
           this.billDescrip = doc.get('description');
           this.billMessage = doc.get('message');
-          console.log('Bill Description: ' + this.billDescrip);
-          console.log('Bill Message: ' + this.billMessage);
+
+          // Get tax/tip and convert to float
+          this.taxRate = doc.get('tax_percent');
+          this.taxRate = this.taxRate >= 1 ? this.taxRate/100 : this.taxRate;
+          this.tipRate = doc.get('tip_percent');
+          this.tipRate = this.tipRate >= 1 ? this.tipRate/100 : this.tipRate;
         } else {
           console.log("Document DNE!");
         }
       }).catch(function(error) {
           console.log("Error getting document:", error);
       });
-
-      // Get bill items from collection
-      this.billItems = this.billItemDoc.collection<BillItem>('items').valueChanges();
     });
+
+    // Calculate initial values
+    this.calcTotal();
+  }
+
+  calcTotal() {
+    this.subTotal = 0;
+    this.total = 0;
+
+    // Sum all checked items
+    var selectedBillItems = document.querySelectorAll('input[type=checkbox]:checked');
+    for (var i = 0; i < selectedBillItems.length; i++) {
+      this.subTotal += parseFloat(selectedBillItems[i].getAttribute("value"));
+    }
+
+    this.tax = this.subTotal * this.taxRate;
+    this.tip = this.subTotal * this.tipRate;
+    this.total = this.subTotal + this.tax + this.tip;
   }
 }
