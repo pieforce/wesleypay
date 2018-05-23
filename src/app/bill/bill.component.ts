@@ -35,6 +35,8 @@ interface BillItem {
 })
 
 export class BillComponent implements OnInit {
+  PAYPAL_BASE_LINK: string = 'https://www.paypal.me/WesleyNg/';
+
   user: Observable<firebase.User>;
 
   // Firestore Collections
@@ -52,12 +54,14 @@ export class BillComponent implements OnInit {
   billId: string;
   billDescrip: string = '';
   billMessage: string = '';
-  total: number;
-  subTotal: number;
-  tax: number;
-  tip: number;
-  taxRate: number;
-  tipRate: number;
+  total: number = 0;
+  subTotal: number = 0;
+  tax: number = 0;
+  tip: number = 0;
+  taxRate: number = 0;
+  tipRate: number = 0;
+  paypalLink: string = this.PAYPAL_BASE_LINK;
+  totalStr: string = '0.00';
   showDetailedBreakdown: boolean = false;
 
   // Inject the activatated route
@@ -116,8 +120,13 @@ export class BillComponent implements OnInit {
       this.subTotal += parseFloat(selectedBillItems[i].getAttribute("value"));
     }
 
+    // Calculate values
     this.tax = this.subTotal * this.taxRate;
     this.tip = this.subTotal * this.tipRate;
     this.total = this.subTotal + this.tax + this.tip;
+
+    // Update Paypal link with friendly value for total
+    this.totalStr = this.total.toFixed(2).toString().replace(',', '');
+    this.paypalLink = this.PAYPAL_BASE_LINK.concat(this.totalStr);
   }
 }

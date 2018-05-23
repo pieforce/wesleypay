@@ -1,47 +1,57 @@
-<h2>{{ billDescrip }}</h2>
-<p>{{ billMessage }}</p>
 
-<div style="overflow-x:auto;">
-  <table style="width:25%">
-      <thead>
-        <th></th>
-        <th></th>
-        <th>Select</th>
-      </thead>
-      <ng-container class="text" style="display:unset" >
-        <tr *ngFor="let billItem of billItems | async">
-          <td class="title">{{ billItem.title }}</td>
-          <td class="cost">{{ billItem.cost | currency:"USD"}}</td>
-          <td class="selection"><input class="billItemCheckbox" type="checkbox" [disabled]="billItem.mandatory" [checked]="billItem.mandatory" (change)="calcTotal()" value="{{billItem.cost}}"></td>
+<div class="container">
+  <div class="col-md-3"></div>
+  <div>
+    <h2>{{ billDescrip }}</h2>
+    <p>{{ billMessage }}</p>
+    
+    <div class="col-md-6">
+      <table class="table">
+          <thead>
+            <tr class="row">
+              <th class="col-7"></th>
+              <th class="col-3"></th>
+              <th class="col-2">Select</th>
+            </tr>
+          </thead>
+          <ng-container class="text" style="display:unset" >
+            <tr class="row" *ngFor="let billItem of billItems | async">
+              <td class="col-7">{{ billItem.title }}</td>
+              <td class="col-3">{{ billItem.cost | currency:"USD"}}</td>
+              <td class="col-2"><input class="billItemCheckbox" type="checkbox" [disabled]="billItem.mandatory" [checked]="billItem.mandatory" (change)="calcTotal()" value="{{billItem.cost}}"></td>
+            </tr>
+          </ng-container>
+          <tr class="row">
+            <td class="col-7">Total:</td>
+            <td class="col-3"><a href="{{ PAYPAL_BASE_LINK }}{{ totalStr }}">{{ total | currency:"USD" }}</a></td>
+            <td class="col-2"><button type="button" class="btn btn-outline-secondary btn-sm"><a class="button-link" href="{{ PAYPAL_BASE_LINK }}{{ totalStr }}">Pay</a></button></td>
+          </tr>
+        </table>
+    </div>
+    
+    <br>
+    <br>
+    <button type="button" class="btn btn-outline-secondary btn-sm" *ngIf="!showDetailedBreakdown" (click)="showDetailedBreakdown=true">Show Details</button>
+    <table class="table-sm" *ngIf="showDetailedBreakdown">
+        <thead class="minor-text" style="text-align: center">Bill Details</thead>
+        <tr>
+          <td class="minor-text">Subtotal</td>
+          <td class="minor-text">{{ subTotal | currency:"USD" }}</td>
         </tr>
-      </ng-container>
-      <tr>
-        <td class="total">Total:</td>
-        <td><a href="https://www.paypal.me/WesleyNg/{{total | number:'1.0-2'}}">{{ total | currency:"USD" }}</a></td>
-        <td>
-      </tr>
+        <tr>
+          <td class="minor-text">Tax ({{ taxRate | percent:'1.0-2' }})</td>
+          <td class="minor-text">{{ tax | currency:"USD" }}</td>
+        </tr>
+        <tr>
+          <td class="minor-text">Tip ({{ tipRate | percent:'1.0-2' }})</td>
+          <td class="minor-text">{{ tip | currency:"USD" }}</td>
+        </tr>
+        <tr>
+          <td class="minor-text">Total</td>
+          <td class="minor-text">{{ total | currency:"USD" }}</td>
+        </tr>
     </table>
+  </div>
+  <div class="col-md-3"></div>
 </div>
 
-<br>
-<br>
-<div class="minor-text" *ngIf="!showDetailedBreakdown" (click)="showDetailedBreakdown=true">[Click for bill details]</div>
-<table style="width:10%;" *ngIf="showDetailedBreakdown">
-    <thead class="minor-text" style="text-align: center">Bill Details</thead>
-    <tr>
-      <td class="minor-text">Subtotal</td>
-      <td class="minor-text">{{ subTotal | currency:"USD" }}</td>
-    </tr>
-    <tr>
-      <td class="minor-text">Tax ({{ taxRate | percent:'1.0-2' }})</td>
-      <td class="minor-text">{{ tax | currency:"USD" }}</td>
-    </tr>
-    <tr>
-      <td class="minor-text">Tip ({{ tipRate | percent:'1.0-2' }})</td>
-      <td class="minor-text">{{ tip | currency:"USD" }}</td>
-    </tr>
-    <tr>
-      <td class="minor-text">Total</td>
-      <td class="minor-text">{{ total | currency:"USD" }}</td>
-    </tr>
-</table>
