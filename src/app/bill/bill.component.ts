@@ -24,6 +24,7 @@ interface Bill {
 
 interface BillItem {
   title: string;
+  subtitles: string[];
   cost: number;
   paid: boolean;
 }
@@ -35,7 +36,7 @@ interface BillItem {
 })
 
 export class BillComponent implements OnInit {
-  PAYPAL_BASE_LINK: string = 'https://www.paypal.me/WesleyNg/';
+  DEFAULT_PAYPAL_BASE_URL: string = 'https://www.paypal.me/WesleyNg/';
 
   user: Observable<firebase.User>;
 
@@ -51,6 +52,7 @@ export class BillComponent implements OnInit {
   billItems: Observable<BillItem[]>;
 
   // Variables
+  paypalBaseUrl: string = this.DEFAULT_PAYPAL_BASE_URL;
   billId: string;
   billDescrip: string = '';
   billMessage: string = '';
@@ -60,7 +62,7 @@ export class BillComponent implements OnInit {
   tip: number = 0;
   taxRate: number = 0;
   tipRate: number = 0;
-  paypalLink: string = this.PAYPAL_BASE_LINK;
+  paypalLink: string = this.paypalBaseUrl;
   totalStr: string = '0.00';
   showDetailedBreakdown: boolean = false;
 
@@ -83,7 +85,7 @@ export class BillComponent implements OnInit {
 
       // Get bill document by Bill ID
       this.billItemDoc = this.db.collection('bills').doc(this.billId);
-
+      
       // Get bill items from collection
       this.billItems = this.billItemDoc.collection<BillItem>('items').valueChanges();
 
@@ -98,6 +100,13 @@ export class BillComponent implements OnInit {
           this.taxRate = this.taxRate >= 1 ? this.taxRate/100 : this.taxRate;
           this.tipRate = doc.get('tip_percent');
           this.tipRate = this.tipRate >= 1 ? this.tipRate/100 : this.tipRate;
+
+          // Get PayPal base url
+          if (doc.get('paypal_base_url') !== undefined && doc.get('paypal_base_url') != this.DEFAULT_PAYPAL_BASE_URL) {
+            this.paypalBaseUrl = doc.get('paypal_base_url');
+          } else {
+            this.paypalBaseUrl = this.DEFAULT_PAYPAL_BASE_URL;
+          }
         } else {
           console.log("Document DNE!");
         }
@@ -127,6 +136,10 @@ export class BillComponent implements OnInit {
 
     // Update Paypal link with friendly value for total
     this.totalStr = this.total.toFixed(2).toString().replace(',', '');
-    this.paypalLink = this.PAYPAL_BASE_LINK.concat(this.totalStr);
+    this.paypalLink = this.paypalBaseUrl.concat(this.totalStr);
+  }
+
+  pay() {
+    window.location.href = this.paypalBaseUrl;
   }
 }

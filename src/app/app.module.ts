@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormControl, FormArray, FormGroup } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -16,16 +16,19 @@ import { BillComponent } from './bill/bill.component';
 import { HomeComponent } from './home/home.component';
 
 import { APP_BASE_HREF } from '@angular/common';
+import { NewBillComponent } from './new-bill/new-bill.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BillComponent,
-    HomeComponent
+    HomeComponent,
+    NewBillComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule, 
     AppRoutingModule,
     RouterModule,
     BrowserAnimationsModule,

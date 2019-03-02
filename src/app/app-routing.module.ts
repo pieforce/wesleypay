@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { BillComponent } from './bill/bill.component';
+import { NewBillComponent } from './new-bill/new-bill.component';
 
 export const routes: Routes = [
   {
@@ -15,6 +16,10 @@ export const routes: Routes = [
   {
     path: 'bills/:billId',
     component: BillComponent
+  },
+  {
+    path: 'new',
+    component: NewBillComponent
   },
   {
     path: 'test',

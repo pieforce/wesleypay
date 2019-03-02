@@ -1,0 +1,84 @@
+<div class="container">
+    <h1>New Bill</h1>
+    <form (ngSubmit)="onSubmit()" [formGroup]="newBillForm">
+      <div class="form-group">
+        <label for="docId">Document ID *</label>
+        <input type="text" class="form-control" formControlName="docId" required>
+      </div>
+ 
+      <div class="form-group">
+        <label for="description">Description *</label>
+        <input type="text" class="form-control" formControlName="description">
+      </div>
+ 
+      <div class="form-group">
+        <label for="message">Message</label>
+        <input type="text" class="form-control" formControlName="message">
+      </div>
+ 
+      <div class="form-group">
+        <label for="taxPct">Tax % *</label>
+        <input type="text" class="form-control" formControlName="taxPct">
+      </div>
+ 
+      <div class="form-group">
+        <label for="tipPct">Tip % *</label>
+        <input type="text" class="form-control" formControlName="tipPct">
+      </div>
+ 
+      <div class="form-group">
+        <label for="tipPct">PayPal.me URL</label>
+        <input type="text" class="form-control" formControlName="paypalBaseUrl">
+      </div>
+ 
+      <div formArrayName="items">
+        <h2>Bill Items</h2> 
+        
+        <div class="form-group">
+          <button (click)="addItem()">[+] Add Item</button>
+        </div>
+      
+        <div *ngFor="let item of items.controls; let i=index">
+          <!-- The repeated alias template -->
+          <h4> Item {{i + 1}}: </h4>
+
+          <div [formGroupName]="i">
+            <div class="form-group">
+              <label for="docId">Title *</label>
+              <input type="text" class="form-control" formControlName="title" required>
+            </div>
+
+            <div class="form-group">
+              <label for="docId">Subtitles (delimiter is ; semicolon)</label>
+              <input type="text" class="form-control" formControlName="subtitles" required>
+            </div>
+        
+            <div class="form-group">
+              <label for="description">Cost *</label>
+              <input type="text" class="form-control" formControlName="cost" required>
+            </div>
+        
+            <div class="form-group">
+              <label for="message">Mandatory?</label>
+              <input type="text" class="form-control" formControlName="mandatory">
+            </div>
+        
+            <div class="form-group">
+              <label for="taxPct">Paid?</label>
+              <input type="text" class="form-control" formControlName="paid">
+            </div>
+          </div>
+
+          <div class="form-group">
+              <button (click)="addItem()">[+] Add Item</button>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="form-group">
+        <button type="submit" class="btn btn-success">Submit</button>
+      </div>
+    </form>
+    <a href="{{ url }}">{{ url }}</a>
+</div>
