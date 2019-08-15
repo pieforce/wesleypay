@@ -17,17 +17,22 @@
       </div>
  
       <div class="form-group">
-        <label for="taxPct">Tax % *</label>
-        <input type="text" class="form-control" formControlName="taxPct">
+        <label for="subtotal">Subtotal *</label>
+        <input type="text" class="form-control" formControlName="subtotal" placeholder="$0.00">
       </div>
  
       <div class="form-group">
-        <label for="tipPct">Tip % *</label>
-        <input type="text" class="form-control" formControlName="tipPct">
+        <label for="tax">Tax *</label>
+        <input type="text" class="form-control" formControlName="tax" placeholder="$0.00">
       </div>
  
       <div class="form-group">
-        <label for="tipPct">PayPal.me URL</label>
+        <label for="tip">Tip *</label>
+        <input type="text" class="form-control" formControlName="tip" placeholder="$0.00">
+      </div>
+ 
+      <div class="form-group">
+        <label for="tip">PayPal.me URL</label>
         <input type="text" class="form-control" formControlName="paypalBaseUrl">
       </div>
  
@@ -64,7 +69,7 @@
             </div>
         
             <div class="form-group">
-              <label for="taxPct">Paid?</label>
+              <label for="tax">Paid?</label>
               <input type="text" class="form-control" formControlName="paid">
             </div>
           </div>

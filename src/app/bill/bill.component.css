@@ -43,6 +43,10 @@ tr:hover {
     color: #afafaf;
 }
 
+.bill-details-container {
+	padding-top: 20px;
+}
+
 @keyframes fadein {
     from { opacity: 0; }
     to   { opacity: 1; }

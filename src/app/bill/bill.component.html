@@ -23,7 +23,7 @@
                 </tr>
               </td>
               <td class="col-3">{{ billItem.cost | currency:"USD"}}</td>
-              <td class="col-2"><input class="billItemCheckbox" type="checkbox" [disabled]="billItem.mandatory" [checked]="billItem.mandatory" (change)="calcTotal()" value="{{billItem.cost}}"></td>
+              <td class="col-2"><input class="billItemCheckbox" type="checkbox" [disabled]="billItem.mandatory" [checked]="billItem.mandatory" (change)="calcTotal()" value="{{ billItem.cost }}" name="{{ billItem.title }}"></td>
             </tr>
           </ng-container>
           <tr class="row">
@@ -36,26 +36,29 @@
     
     <br>
     <br>
-    <button type="button" class="btn btn-outline-secondary btn-sm" *ngIf="!showDetailedBreakdown" (click)="showDetailedBreakdown=true">Show Details</button>
-    <table class="table-sm" *ngIf="showDetailedBreakdown">
-        <thead class="minor-text" style="text-align: center">Bill Details</thead>
-        <tr>
-          <td class="minor-text">Subtotal</td>
-          <td class="minor-text">{{ subTotal | currency:"USD" }}</td>
-        </tr>
-        <tr>
-          <td class="minor-text">Tax ({{ taxRate | percent:'1.0-2' }})</td>
-          <td class="minor-text">{{ tax | currency:"USD" }}</td>
-        </tr>
-        <tr>
-          <td class="minor-text">Tip ({{ tipRate | percent:'1.0-2' }})</td>
-          <td class="minor-text">{{ tip | currency:"USD" }}</td>
-        </tr>
-        <tr>
-          <td class="minor-text">Total</td>
-          <td class="minor-text">{{ total | currency:"USD" }}</td>
-        </tr>
-    </table>
+    <button type="button" class="btn btn-outline-secondary btn-sm" (click)="showDetailedBreakdown=!showDetailedBreakdown">Show Details</button>
+    <br>
+    <div class="bill-details-container">
+      <table class="table-sm" *ngIf="showDetailedBreakdown">
+          <thead class="minor-text" style="text-align: center">Bill Details</thead>
+          <tr>
+            <td class="minor-text">Subtotal</td>
+            <td class="minor-text">{{ subTotal | currency:"USD" }}</td>
+          </tr>
+          <tr>
+            <td class="minor-text">Tax ({{ taxRate | percent:'1.0-2' }})</td>
+            <td class="minor-text">{{ tax | currency:"USD" }}</td>
+          </tr>
+          <tr>
+            <td class="minor-text">Tip ({{ tipRate | percent:'1.0-2' }})</td>
+            <td class="minor-text">{{ tip | currency:"USD" }}</td>
+          </tr>
+          <tr>
+            <td class="minor-text">Total</td>
+            <td class="minor-text">{{ total | currency:"USD" }}</td>
+          </tr>
+      </table>
+    </div>
   </div>
   <div class="col-md-3"></div>
 </div>

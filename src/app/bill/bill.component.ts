@@ -1,20 +1,12 @@
-import { Component, OnInit, OnChanges, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { AngularFirestoreCollection } from 'angularfire2/firestore';
 import { AngularFirestoreDocument } from 'angularfire2/firestore';
-import { AngularFireDatabase } from 'angularfire2/database';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { Observable } from 'rxjs/Observable';
 import * as firebase from 'firebase/app';
-
-import {
-  trigger,
-  animate,
-  transition,
-  style,
-  query
-} from '@angular/animations';
 
 interface Bill {
   description: string;
@@ -64,10 +56,11 @@ export class BillComponent implements OnInit {
   tipRate: number = 0;
   paypalLink: string = this.paypalBaseUrl;
   totalStr: string = '0.00';
+  checkedItems: string[] = [];
   showDetailedBreakdown: boolean = false;
 
   // Inject the activatated route
-  constructor(private route: ActivatedRoute, public afAuth: AngularFireAuth, private db: AngularFirestore) {
+  constructor(private route: ActivatedRoute, public afAuth: AngularFireAuth, private db: AngularFirestore, private http: HttpClient) {
     this.afAuth.auth.signInAnonymously();
     this.user = this.afAuth.authState;
   }
@@ -108,10 +101,10 @@ export class BillComponent implements OnInit {
             this.paypalBaseUrl = this.DEFAULT_PAYPAL_BASE_URL;
           }
         } else {
-          console.log("Document DNE!");
+          console.log('Document DNE!');
         }
-      }).catch(function(error) {
-          console.log("Error getting document:", error);
+      }).catch((err) => {
+          console.log('Error getting document:', err);
       });
     });
 
@@ -122,12 +115,13 @@ export class BillComponent implements OnInit {
   calcTotal() {
     this.subTotal = 0;
     this.total = 0;
+    this.checkedItems = [];
 
     // Sum all checked items
-    var selectedBillItems = document.querySelectorAll('input[type=checkbox]:checked');
-    for (var i = 0; i < selectedBillItems.length; i++) {
-      this.subTotal += parseFloat(selectedBillItems[i].getAttribute("value"));
-    }
+    document.querySelectorAll('input[type=checkbox]:checked').forEach(itemElem => {
+      this.subTotal += parseFloat(itemElem.getAttribute("value"));
+      this.checkedItems.push(itemElem.getAttribute("name"));
+    });
 
     // Calculate values
     this.tax = this.subTotal * this.taxRate;
@@ -140,6 +134,41 @@ export class BillComponent implements OnInit {
   }
 
   pay() {
-    window.location.href = this.paypalBaseUrl;
+    // Record payer data
+    let ip = '';
+    this.http.get('https://jsonip.com').subscribe(
+      (res) => {
+        ip = res['ip'];
+        this.db.collection('bills').doc(this.billId).collection('paid').doc(ip).set({
+          ip,
+          amount: this.totalStr,
+          items: this.checkedItems,
+          timestamp: new Date(),
+        })
+        .then(() => {
+          console.log(ip + ' marked as paid');
+          window.location.href = this.paypalBaseUrl;
+        })
+        .catch((err) => {
+          console.error('IP Marked payment error ' + ip, err);
+        });
+      },
+      (err) => {
+        console.error('IP Error ' + ip, err);
+        this.db.collection('bills').doc(this.billId).collection('paid').add({
+          ip,
+          amount: this.totalStr,
+          items: this.checkedItems,
+          timestamp: new Date(),
+        })
+        .then(() => {
+          console.log('Anon marked as paid');
+          window.location.href = this.paypalBaseUrl;
+        })
+        .catch((err) => {
+          console.error('Marked payment error', err);
+        });
+      }
+    );
   }
 }

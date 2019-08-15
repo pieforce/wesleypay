@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormControl, FormArray, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormArray, FormGroup } from '@angular/forms';
 import { formatDate } from '@angular/common';
 import { AngularFirestore } from 'angularfire2/firestore';
-import { AngularFirestoreCollection } from 'angularfire2/firestore';
-import { AngularFirestoreDocument } from 'angularfire2/firestore';
-import { AngularFireDatabase } from 'angularfire2/database';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { Observable } from 'rxjs/Observable';
 import * as firebase from 'firebase/app';
@@ -26,7 +23,7 @@ export class NewBillComponent implements OnInit {
   docId: string = 'TEST-BILL-CREATION';
 
   // Inject the activatated route
-  constructor(private route: ActivatedRoute, public afAuth: AngularFireAuth, private db: AngularFirestore, private fb: FormBuilder) {
+  constructor(public afAuth: AngularFireAuth, private db: AngularFirestore, private fb: FormBuilder) {
     this.afAuth.auth.signInAnonymously();
     this.user = this.afAuth.authState;
   }
@@ -37,8 +34,9 @@ export class NewBillComponent implements OnInit {
       docId: new FormControl(randomDocId),
       description: new FormControl(''),
       message: new FormControl(''),
-      taxPct: new FormControl('8.75'),
-      tipPct: new FormControl('15.00'),
+      subtotal: new FormControl(''),
+      tax: new FormControl(''),
+      tip: new FormControl(''),
       paypalBaseUrl: new FormControl(this.paypalBaseUrl),
       items: this.fb.array([])
     });
@@ -50,9 +48,10 @@ export class NewBillComponent implements OnInit {
       this.docId, 
       this.newBillForm.get('description').value, 
       this.newBillForm.get('message').value, 
-      this.newBillForm.get('taxPct').value, 
-      this.newBillForm.get('tipPct').value,
-      this.newBillForm.get('paypalBaseUrl').value
+      this.newBillForm.get('subtotal').value, 
+      this.newBillForm.get('tax').value, 
+      this.newBillForm.get('tip').value,
+      this.newBillForm.get('paypalBaseUrl').value,
     );
 
     if (this.newBillForm.get('items').value.length > 0) {
@@ -87,13 +86,14 @@ export class NewBillComponent implements OnInit {
     }));
   }
 
-  createNewBill(docId, desc: string, msg: string, taxPct, tipPct, paypalBaseUrl: string) {
+  createNewBill(docId, desc: string, msg: string, subtotal, tax, tip, paypalBaseUrl: string) {
     // Create new bill document
     this.db.collection('bills').doc(docId).set({
       description: desc,
       message: msg,
-      tax_percent: Number(taxPct),
-      tip_percent: Number(tipPct),
+      subtotal: Number(subtotal),
+      tax_percent: Number((tax/subtotal)*100),
+      tip_percent: Number((tip/subtotal)*100),
       paypal_base_url: paypalBaseUrl,
       date_created: new Date()
     })
