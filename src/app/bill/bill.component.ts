@@ -117,11 +117,12 @@ export class BillComponent implements OnInit {
     this.total = 0;
     this.checkedItems = [];
 
-    // Sum all checked items
-    document.querySelectorAll('input[type=checkbox]:checked').forEach(itemElem => {
-      this.subTotal += parseFloat(itemElem.getAttribute("value"));
-      this.checkedItems.push(itemElem.getAttribute("name"));
-    });
+    // Inventory and sum-up all checked items
+    let selectedBillItems = document.querySelectorAll('input[type=checkbox]:checked');
+    for (let i = 0; i < selectedBillItems.length; i++) {
+      this.subTotal += parseFloat(selectedBillItems[i].getAttribute("value"));
+      this.checkedItems.push(selectedBillItems[i].getAttribute("name"));
+    }
 
     // Calculate values
     this.tax = this.subTotal * this.taxRate;
