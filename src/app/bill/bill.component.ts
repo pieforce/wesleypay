@@ -140,35 +140,6 @@ export class BillComponent implements OnInit {
     this.http.get('https://jsonip.com').subscribe(
       (res) => {
         ip = res['ip'];
-        this.http.get('http://ip-api.com/json/' + ip).subscribe(
-          (res) => {
-            this.db.collection('bills').doc(this.billId).collection('paid').doc(ip).set({
-              ip,
-              city: res['city'],
-              region: res['region'],
-              regionName: res['regionName'],
-              isp: res['isp'],
-              lat: res['lat'],
-              lon: res['lon'],
-              org: res['org'],
-              zip: res['zip'],
-              country: res['country'],
-              amount: this.totalStr,
-              items: this.checkedItems,
-              timestamp: new Date(),
-            })
-            .then(() => {
-              console.log(ip + ' marked as paid');
-              window.location.href = this.paypalLink;
-            })
-            .catch((err) => {
-              console.error('IP Marked payment error ' + ip, err);
-            });
-          }
-        );
-      },
-      (err) => {
-        console.error('IP Error ' + ip, err);
         this.db.collection('bills').doc(this.billId).collection('paid').add({
           ip,
           amount: this.totalStr,
@@ -181,7 +152,12 @@ export class BillComponent implements OnInit {
         })
         .catch((err) => {
           console.error('Marked payment error', err);
+          window.location.href = this.paypalLink;
         });
+      },
+      (err) => {
+        console.error('IP Error', err);
+        window.location.href = this.paypalLink;
       }
     );
   }
