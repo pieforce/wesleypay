@@ -159,7 +159,7 @@ export class BillComponent implements OnInit {
             })
             .then(() => {
               console.log(ip + ' marked as paid');
-              window.location.href = this.paypalBaseUrl;
+              window.location.href = this.paypalLink;
             })
             .catch((err) => {
               console.error('IP Marked payment error ' + ip, err);
@@ -177,7 +177,7 @@ export class BillComponent implements OnInit {
         })
         .then(() => {
           console.log('Anon marked as paid');
-          window.location.href = this.paypalBaseUrl;
+          window.location.href = this.paypalLink;
         })
         .catch((err) => {
           console.error('Marked payment error', err);
