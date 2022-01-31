@@ -1,6 +1,6 @@
 export const FirebaseConfig = {
     firebase: {      
-        apiKey: "AIzaSyDKajhxZs3TkG7AveeAs5gM9x-3J_WIYNE",
+        apiKey: "AIzaSyBjqlWtNUBROeKQj1kmVtFNEPTJ2qoZaZQ",
         authDomain: "wesley-pay.firebaseapp.com",
         databaseURL: "https://wesley-pay.firebaseio.com",
         projectId: "wesley-pay",
