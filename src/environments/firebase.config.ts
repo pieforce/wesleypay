@@ -5,6 +5,7 @@ export const FirebaseConfig = {
         databaseURL: "https://wesley-pay.firebaseio.com",
         projectId: "wesley-pay",
         storageBucket: "wesley-pay.appspot.com",
-        messagingSenderId: "66966892296"
+        messagingSenderId: "66966892296",
+        appId: "1:66966892296:web:dac9194d4ade2055b706bd"
     }  
 };
